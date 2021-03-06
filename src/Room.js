@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import { useParams } from "react-router";
 
 import { Users } from "./Users";
+import { Hand } from "./Hand";
 
 const ROOM_QUERY = gql`
   query Room($id: ID!) {
@@ -59,8 +60,9 @@ export function Room() {
 
   return (
     <div className="App">
-      <Users />
       {JSON.stringify(data)}
+      <Users />
+      <Hand />
     </div>
   );
 }

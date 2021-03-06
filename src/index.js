@@ -10,6 +10,9 @@ import {
 } from "@apollo/client";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { WebSocketLink } from "@apollo/client/link/ws";
+import { Client as Styletron } from "styletron-engine-atomic";
+import { Provider as StyletronProvider } from "styletron-react";
+import { LightTheme, BaseProvider } from "baseui";
 
 import "./index.css";
 import { Room } from "./Room";
@@ -40,19 +43,25 @@ const apolloClient = new ApolloClient({
   link: splitLink,
 });
 
+const engine = new Styletron();
+
 ReactDOM.render(
   <React.StrictMode>
     <ApolloProvider client={apolloClient}>
-      <Router>
-        <Switch>
-          <Route exact path="/">
-            <Home />
-          </Route>
-          <Route exact path="/room/:roomId">
-            <Room />
-          </Route>
-        </Switch>
-      </Router>
+      <StyletronProvider value={engine}>
+        <BaseProvider theme={LightTheme}>
+          <Router>
+            <Switch>
+              <Route exact path="/">
+                <Home />
+              </Route>
+              <Route exact path="/room/:roomId">
+                <Room />
+              </Route>
+            </Switch>
+          </Router>
+        </BaseProvider>
+      </StyletronProvider>
     </ApolloProvider>
   </React.StrictMode>,
   document.getElementById("root")
