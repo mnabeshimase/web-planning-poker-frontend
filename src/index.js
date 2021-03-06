@@ -1,16 +1,43 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import {
+  ApolloClient,
+  ApolloProvider,
+  HttpLink,
+  InMemoryCache,
+  split,
+} from "@apollo/client";
+import { getMainDefinition } from "@apollo/client/utilities";
+import { WebSocketLink } from "@apollo/client/link/ws";
 
 import "./index.css";
 import { Room } from "./Room";
 import { Home } from "./Home";
 import reportWebVitals from "./reportWebVitals";
 
+const httpLink = new HttpLink({
+  uri: "http://localhost:3001/graphql",
+});
+const wsLink = new WebSocketLink({
+  uri: "ws://localhost:3001/graphql",
+  options: { reconnect: true },
+});
+const splitLink = split(
+  ({ query }) => {
+    const definition = getMainDefinition(query);
+    return (
+      definition.kind === "OperationDefinition" &&
+      definition.operation === "subscription"
+    );
+  },
+  wsLink,
+  httpLink
+);
+
 const apolloClient = new ApolloClient({
   cache: new InMemoryCache(),
-  uri: "http://localhost:3001/graphql",
+  link: splitLink,
 });
 
 ReactDOM.render(

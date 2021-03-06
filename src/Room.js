@@ -1,6 +1,8 @@
 import { gql, useQuery } from "@apollo/client";
 import { useParams } from "react-router";
 
+import { Users } from "./Users";
+
 const ROOM_QUERY = gql`
   query Room($id: ID!) {
     room(id: $id) {
@@ -20,5 +22,10 @@ export function Room() {
     return <div className="App">Loading</div>;
   }
 
-  return <div className="App">{JSON.stringify(data)}</div>;
+  return (
+    <div className="App">
+      <Users />
+      {JSON.stringify(data)}
+    </div>
+  );
 }
