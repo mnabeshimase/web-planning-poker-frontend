@@ -1,6 +1,5 @@
 import { gql, useQuery } from "@apollo/client";
-
-import "./App.css";
+import { useParams } from "react-router";
 
 const ROOM_QUERY = gql`
   query Room($id: ID!) {
@@ -10,9 +9,11 @@ const ROOM_QUERY = gql`
   }
 `;
 
-function App() {
+export function Room() {
+  const { id } = useParams();
+  // TODO: Handle error state
   const { loading, data } = useQuery(ROOM_QUERY, {
-    variables: { id: "abc" },
+    variables: { id },
   });
 
   if (loading) {
@@ -21,5 +22,3 @@ function App() {
 
   return <div className="App">{JSON.stringify(data)}</div>;
 }
-
-export default App;

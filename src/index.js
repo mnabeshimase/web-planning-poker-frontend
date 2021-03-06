@@ -1,9 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 
 import "./index.css";
-import App from "./App";
+import { Room } from "./Room";
+import { Home } from "./Home";
 import reportWebVitals from "./reportWebVitals";
 
 const apolloClient = new ApolloClient({
@@ -14,7 +16,16 @@ const apolloClient = new ApolloClient({
 ReactDOM.render(
   <React.StrictMode>
     <ApolloProvider client={apolloClient}>
-      <App />
+      <Router>
+        <Switch>
+          <Route exact path="/">
+            <Home />
+          </Route>
+          <Route exact path="/room/:id">
+            <Room />
+          </Route>
+        </Switch>
+      </Router>
     </ApolloProvider>
   </React.StrictMode>,
   document.getElementById("root")
