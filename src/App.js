@@ -1,25 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import { gql, useQuery } from "@apollo/client";
+
+import "./App.css";
+
+const ROOM_QUERY = gql`
+  query Room($id: ID!) {
+    room(id: $id) {
+      id
+    }
+  }
+`;
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const { loading, data } = useQuery(ROOM_QUERY, {
+    variables: { id: "abc" },
+  });
+
+  if (loading) {
+    return <div className="App">Loading</div>;
+  }
+
+  return <div className="App">{JSON.stringify(data)}</div>;
 }
 
 export default App;
