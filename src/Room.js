@@ -16,14 +16,15 @@ const ROOM_QUERY = gql`
 const CREATE_USER_MUTATION = gql`
   mutation CreateUser($name: String!, $roomId: ID!) {
     createUser(name: $name, roomId: $roomId) {
+      id
       name
     }
   }
 `;
 const DELETE_USER_MUTATION = gql`
-  mutation DeleteUser($name: String!, $roomId: ID!) {
-    deleteUser(name: $name, roomId: $roomId) {
-      name
+  mutation DeleteUser($id: ID!) {
+    deleteUser(id: $id) {
+      id
     }
   }
 `;
@@ -34,7 +35,9 @@ export function Room() {
   const { loading, data } = useQuery(ROOM_QUERY, {
     variables: { id: roomId },
   });
-  const [createUser] = useMutation(CREATE_USER_MUTATION);
+  const [createUser, { data: createUserData }] = useMutation(
+    CREATE_USER_MUTATION
+  );
   const [deleteUser] = useMutation(DELETE_USER_MUTATION);
   const userName = useRef("user" + Date.now().toString());
 
@@ -47,12 +50,17 @@ export function Room() {
 
   // Remove user from the room on unmount
   useEffect(() => {
-    function onUnmount() {
-      return deleteUser({ variables: { name: userName.current, roomId } });
+    if (createUserData) {
+      function onUnmount() {
+        const {
+          createUser: { id },
+        } = createUserData;
+        return deleteUser({ variables: { id } });
+      }
+      window.addEventListener("beforeunload", onUnmount);
+      return () => window.removeEventListener("beforeunload", onUnmount);
     }
-    window.addEventListener("beforeunload", onUnmount);
-    return () => window.removeEventListener("beforeunload", onUnmount);
-  }, [deleteUser, roomId]);
+  }, [createUserData, deleteUser]);
 
   if (loading) {
     return <div className="App">Loading</div>;
