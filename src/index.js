@@ -48,7 +48,7 @@ ReactDOM.render(
           <Route exact path="/">
             <Home />
           </Route>
-          <Route exact path="/room/:id">
+          <Route exact path="/room/:roomId">
             <Room />
           </Route>
         </Switch>

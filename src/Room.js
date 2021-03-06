@@ -1,4 +1,5 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
+import { useEffect } from "react";
 import { useParams } from "react-router";
 
 import { Users } from "./Users";
@@ -11,12 +12,28 @@ const ROOM_QUERY = gql`
   }
 `;
 
+const CREATE_USER_MUTATION = gql`
+  mutation CreateUser($name: String!, $roomId: ID!) {
+    createUser(name: $name, roomId: $roomId) {
+      name
+    }
+  }
+`;
+
 export function Room() {
-  const { id } = useParams();
+  const { roomId } = useParams();
   // TODO: Handle error state
   const { loading, data } = useQuery(ROOM_QUERY, {
-    variables: { id },
+    variables: { id: roomId },
   });
+  const [createUser] = useMutation(CREATE_USER_MUTATION);
+
+  // TODO: add a form for user creation
+  useEffect(() => {
+    createUser({
+      variables: { name: "user" + Date.now().toString(), roomId },
+    });
+  }, [createUser, roomId]);
 
   if (loading) {
     return <div className="App">Loading</div>;
