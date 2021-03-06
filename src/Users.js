@@ -9,6 +9,13 @@ const USER_CREATED_SUBSCRIPTION = gql`
     }
   }
 `;
+const USER_DELETED_SUBSCRIPTION = gql`
+  subscription UserDeleted {
+    userDeleted {
+      name
+    }
+  }
+`;
 const USERS_QUERY = gql`
   query Room($id: ID!) {
     room(id: $id) {
@@ -24,25 +31,44 @@ export const Users = () => {
   const { roomId } = useParams();
   // TODO: Handle error and loading state
   const { data: userCreatedData } = useSubscription(USER_CREATED_SUBSCRIPTION);
+  const { data: userDeletedData } = useSubscription(USER_DELETED_SUBSCRIPTION);
   const { data: usersData, loading } = useQuery(USERS_QUERY, {
     variables: { id: roomId },
   });
-  const [createdUsers, setCreatedUsers] = useState([]);
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    if (usersData) {
+      setUsers(usersData.room.users);
+    }
+  }, [usersData]);
 
   useEffect(() => {
     if (userCreatedData) {
-      setCreatedUsers((createdUsers) => [...createdUsers, userCreatedData]);
+      const { userCreated } = userCreatedData;
+      setUsers([...users, userCreated]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userCreatedData]);
+
+  useEffect(() => {
+    if (userDeletedData) {
+      const {
+        userDeleted: { name },
+      } = userDeletedData;
+
+      setUsers(users.filter((user) => user.name !== name));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userDeletedData]);
 
   if (loading) {
     return <div>Loading</div>;
   }
 
-  const usersInRoom = [...usersData.room.users, ...createdUsers];
   return (
     <div>
-      <p>createdUser:{JSON.stringify(usersInRoom)}</p>
+      <p>createdUser:{JSON.stringify(users)}</p>
     </div>
   );
 };
