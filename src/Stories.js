@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { gql, useQuery, useSubscription } from "@apollo/client";
 import { ListItem, ListItemLabel } from "baseui/list";
+import { styled } from "baseui";
+import { Display4 } from "baseui/typography";
 
 const LIST_STORIES_BY_ROOM_ID_QUERY = gql`
   query ListStoriesByRoomId($id: ID!) {
@@ -20,6 +22,16 @@ const STORY_CREATED_SUBSCRIPTION = gql`
     }
   }
 `;
+
+const OutLine = styled("div", ({ $theme }) => ({
+  ...$theme.borders.border600,
+  padding: $theme.sizing.scale800,
+}));
+
+const List = styled("div", {
+  height: "52em",
+  overflow: "scroll",
+});
 
 export const Stories = () => {
   const { roomId } = useParams();
@@ -55,12 +67,16 @@ export const Stories = () => {
   }
 
   return (
-    <ul>
-      {stories.map((story) => (
-        <ListItem key={story.id}>
-          <ListItemLabel>{story.description}</ListItemLabel>
-        </ListItem>
-      ))}
-    </ul>
+    <OutLine>
+      <Display4 margin="scale800">Stories</Display4>
+      <hr />
+      <List>
+        {stories.map((story) => (
+          <ListItem key={story.id}>
+            <ListItemLabel>{story.description}</ListItemLabel>
+          </ListItem>
+        ))}
+      </List>
+    </OutLine>
   );
 };

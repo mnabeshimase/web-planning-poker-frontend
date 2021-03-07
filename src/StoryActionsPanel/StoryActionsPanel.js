@@ -11,6 +11,15 @@ import { Textarea } from "baseui/textarea";
 import { FormControl } from "baseui/form-control";
 import { gql, useMutation } from "@apollo/client";
 import { useParams } from "react-router";
+import { styled } from "baseui";
+
+const Outline = styled("div", ({ $theme }) => ({
+  ...$theme.borders.border600,
+  display: "flex",
+  justifyContent: "center",
+  padding: $theme.sizing.scale600,
+  height: "4em",
+}));
 
 const CREATE_STORY_MUTATION = gql`
   mutation CreateStory($roomId: ID!, $description: String!) {
@@ -19,6 +28,7 @@ const CREATE_STORY_MUTATION = gql`
     }
   }
 `;
+
 export const StoryActionsPanel = () => {
   const { roomId } = useParams();
   const [
@@ -35,7 +45,7 @@ export const StoryActionsPanel = () => {
   }, [createStoryData, createStoryLoading]);
 
   return (
-    <div style={{ width: "100%" }}>
+    <Outline>
       <Button
         onClick={() => setIsStoryModalOpen(true)}
         overrides={{ BaseButton: { style: { width: "100%" } } }}
@@ -83,6 +93,6 @@ export const StoryActionsPanel = () => {
           </ModalFooter>
         </form>
       </Modal>
-    </div>
+    </Outline>
   );
 };
