@@ -17,6 +17,10 @@ import { LightTheme, BaseProvider } from "baseui";
 import { Room } from "./Room";
 import { Home } from "./Home";
 import reportWebVitals from "./reportWebVitals";
+import { Header } from "./Header";
+
+// eslint-disable-next-line no-unused-vars
+import NormalizeCSS from "./normalize.css";
 
 const httpLink = new HttpLink({
   uri: "http://localhost:3001/graphql",
@@ -50,6 +54,7 @@ ReactDOM.render(
       <StyletronProvider value={engine}>
         <BaseProvider theme={LightTheme}>
           <Router>
+            <Header />
             <Switch>
               <Route exact path="/">
                 <Home />

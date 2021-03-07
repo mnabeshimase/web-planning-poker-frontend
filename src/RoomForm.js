@@ -17,6 +17,7 @@ const CREATE_USER_MUTATION = gql`
 
 const Outline = styled("div", ({ $theme }) => ({
   ...$theme.borders.border600,
+  borderRadius: $theme.borders.radius200,
   padding: $theme.sizing.scale800,
   width: "28em",
 }));
