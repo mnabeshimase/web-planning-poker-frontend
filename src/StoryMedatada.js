@@ -1,6 +1,8 @@
-import { gql, useQuery, useSubscription } from "@apollo/client";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { gql, useQuery, useSubscription } from "@apollo/client";
+import { styled } from "baseui";
+import { Display4 } from "baseui/typography";
 
 const ROOM_QUERY = gql`
   query Room($id: ID!) {
@@ -31,6 +33,12 @@ const ROOM_UPDATED_SUBSCRIPTION = gql`
     }
   }
 `;
+
+const Outline = styled("div", {
+  height: "4em",
+  display: "flex",
+  alignItems: "center",
+});
 
 export const StoryMetadata = () => {
   const { roomId } = useParams();
@@ -69,5 +77,9 @@ export const StoryMetadata = () => {
     roomUpdatedData?.roomUpdated.currentStoryId;
   const currentStory = stories.find((story) => story.id === currentStoryId);
 
-  return <div>{JSON.stringify(currentStory && currentStory.description)}</div>;
+  return (
+    <Outline>
+      <Display4 margin="scale800">{currentStory?.description}</Display4>
+    </Outline>
+  );
 };
