@@ -1,10 +1,19 @@
 import { useParams } from "react-router";
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { Button } from "baseui/button";
 import { ButtonGroup } from "baseui/button-group";
 import { styled } from "baseui";
 
 const DISCUSSION = "DISCUSSION";
+
+const ROOM_QUERY = gql`
+  query Room($id: ID!) {
+    room(id: $id) {
+      id
+      phase
+    }
+  }
+`;
 
 const UPDATE_ROOM_MUTATION = gql`
   mutation UpdateRoom($updateRoomInput: UpdateRoomInput!) {
@@ -33,27 +42,39 @@ const ButtonOverride = {
 
 export const HostActionPanes = () => {
   const { roomId } = useParams();
+  const { data: roomData, loading: roomLoading } = useQuery(ROOM_QUERY, {
+    variables: { id: roomId },
+  });
   const [updateRoom] = useMutation(UPDATE_ROOM_MUTATION);
+
+  if (roomLoading) {
+    return <div>loading</div>;
+  }
+
+  const { room } = roomData;
   return (
     <Outline>
-      <ButtonGroup>
-        <Button
-          onClick={() =>
-            updateRoom({
-              variables: {
-                updateRoomInput: {
-                  id: roomId,
-                  phase: DISCUSSION,
+      {room.phase === "INIT" && <Button {...ButtonOverride}>Start</Button>}
+      {(room.phase === "VOTE" || room.phase === "DISCUSSION") && (
+        <ButtonGroup>
+          <Button
+            onClick={() =>
+              updateRoom({
+                variables: {
+                  updateRoomInput: {
+                    id: roomId,
+                    phase: DISCUSSION,
+                  },
                 },
-              },
-            })
-          }
-          {...ButtonOverride}
-        >
-          Flip Cards
-        </Button>
-        <Button {...ButtonOverride}>Next Story</Button>
-      </ButtonGroup>
+              })
+            }
+            {...ButtonOverride}
+          >
+            Flip Cards
+          </Button>
+          <Button {...ButtonOverride}>Next Story</Button>
+        </ButtonGroup>
+      )}
     </Outline>
   );
 };

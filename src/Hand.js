@@ -19,9 +19,8 @@ export const Hand = (props) => {
         flexGridColumnGap="scale200"
       >
         {cardValues.map((value) => (
-          <FlexGridItem>
+          <FlexGridItem key={value}>
             <Card
-              key={value}
               value={value}
               isSelected={value === selectedCard}
               setSelectedCard={setSelectedCard}
