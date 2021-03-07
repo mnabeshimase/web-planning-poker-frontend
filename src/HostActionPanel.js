@@ -3,6 +3,7 @@ import { gql, useMutation, useQuery, useSubscription } from "@apollo/client";
 import { Button } from "baseui/button";
 import { ButtonGroup } from "baseui/button-group";
 import { styled } from "baseui";
+import { useEffect, useState } from "react";
 
 const DISCUSSION = "DISCUSSION";
 
@@ -11,6 +12,11 @@ const ROOM_QUERY = gql`
     room(id: $id) {
       id
       phase
+      currentStoryId
+    }
+    listStoriesByRoomId(id: $id) {
+      id
+      description
     }
   }
 `;
@@ -27,6 +33,15 @@ const ROOM_UPDATED_SUBSCRIPTION = gql`
   subscription RoomUpdated {
     roomUpdated {
       phase
+    }
+  }
+`;
+
+const STORY_CREATED_SUBSCRIPTION = gql`
+  subscription StoryCreated {
+    storyCreated {
+      id
+      description
     }
   }
 `;
@@ -55,6 +70,25 @@ export const HostActionPanes = () => {
   });
   const [updateRoom] = useMutation(UPDATE_ROOM_MUTATION);
   const { data: roomUpdatedData } = useSubscription(ROOM_UPDATED_SUBSCRIPTION);
+  const { data: StoryCreatedData } = useSubscription(
+    STORY_CREATED_SUBSCRIPTION
+  );
+  const [stories, setStories] = useState([]);
+
+  useEffect(() => {
+    if (roomData) {
+      const { listStoriesByRoomId } = roomData;
+      setStories(listStoriesByRoomId);
+    }
+  }, [roomData]);
+
+  useEffect(() => {
+    if (StoryCreatedData) {
+      const { storyCreated } = StoryCreatedData;
+      setStories([...stories, storyCreated]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [StoryCreatedData]);
 
   if (roomLoading) {
     return <div>loading</div>;
@@ -62,15 +96,23 @@ export const HostActionPanes = () => {
 
   const { room } = roomData;
   const phase = roomUpdatedData?.roomUpdated.phase || room.phase;
+  const nextStoryId =
+    stories[stories.findIndex((story) => story.id === stories[0].id) + 1]?.id;
+
   return (
     <Outline>
       {phase === "INIT" && (
         <Button
           {...ButtonOverride}
+          disabled={!stories.length}
           onClick={() => {
             updateRoom({
               variables: {
-                updateRoomInput: { id: roomId, phase: "VOTE" },
+                updateRoomInput: {
+                  id: roomId,
+                  phase: "VOTE",
+                  currentStoryId: stories[0].id,
+                },
               },
             });
           }}
@@ -95,7 +137,23 @@ export const HostActionPanes = () => {
           >
             Flip Cards
           </Button>
-          <Button {...ButtonOverride}>Next Story</Button>
+          <Button
+            {...ButtonOverride}
+            disabled={!nextStoryId}
+            onClick={() => {
+              updateRoom({
+                variables: {
+                  updateRoomInput: {
+                    id: roomId,
+                    currentStoryId: nextStoryId,
+                    phase: "DISCUSSION",
+                  },
+                },
+              });
+            }}
+          >
+            Next Story
+          </Button>
         </ButtonGroup>
       )}
     </Outline>
