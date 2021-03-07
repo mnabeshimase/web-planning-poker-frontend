@@ -35,7 +35,7 @@ const ROOM_UPDATED_SUBSCRIPTION = gql`
 `;
 
 const Outline = styled("div", {
-  height: "4em",
+  width: "100%",
   display: "flex",
   alignItems: "center",
 });
