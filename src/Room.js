@@ -1,6 +1,7 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { useEffect, useRef } from "react";
 import { useParams } from "react-router";
+import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
 
 import { Users } from "./Users";
 import { Hand } from "./Hand";
@@ -67,10 +68,16 @@ export function Room() {
   }
 
   return (
-    <div className="App">
-      {JSON.stringify(data)}
-      <Users />
-      <Hand />
-    </div>
+    <FlexGrid flexGridColumnCount={3}>
+      <FlexGridItem>{JSON.stringify(data)}</FlexGridItem>
+      <FlexGridItem>
+        <Users />
+      </FlexGridItem>
+      <FlexGridItem display="none" />
+
+      <FlexGridItem>
+        <Hand />
+      </FlexGridItem>
+    </FlexGrid>
   );
 }

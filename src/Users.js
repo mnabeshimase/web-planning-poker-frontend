@@ -1,6 +1,9 @@
 import { gql, useQuery, useSubscription } from "@apollo/client";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { styled } from "baseui";
+import { ListItem, ListItemLabel } from "baseui/list";
+import { Heading, HeadingLevel } from "baseui/heading";
 
 const USER_CREATED_SUBSCRIPTION = gql`
   subscription UserCreated {
@@ -26,6 +29,16 @@ const USERS_QUERY = gql`
     }
   }
 `;
+
+const OutLine = styled("div", ({ $theme }) => ({
+  ...$theme.borders.border400,
+  padding: $theme.sizing.scale600,
+}));
+
+const List = styled("ul", {
+  height: "12em",
+  overflow: "scroll",
+});
 
 export const Users = () => {
   const { roomId } = useParams();
@@ -67,8 +80,17 @@ export const Users = () => {
   }
 
   return (
-    <div>
-      <p>createdUser:{JSON.stringify(users)}</p>
-    </div>
+    <OutLine>
+      <HeadingLevel>
+        <Heading styleLevel={5}>{users.length} Participants</Heading>
+      </HeadingLevel>
+      <List>
+        {users.map((user) => (
+          <ListItem key={user.id}>
+            <ListItemLabel>{user.name}</ListItemLabel>
+          </ListItem>
+        ))}
+      </List>
+    </OutLine>
   );
 };

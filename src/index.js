@@ -14,7 +14,6 @@ import { Client as Styletron } from "styletron-engine-atomic";
 import { Provider as StyletronProvider } from "styletron-react";
 import { LightTheme, BaseProvider } from "baseui";
 
-import "./index.css";
 import { Room } from "./Room";
 import { Home } from "./Home";
 import reportWebVitals from "./reportWebVitals";
