@@ -16,6 +16,7 @@ import { Users } from "./Users";
 import { Hand } from "./Hand";
 import { Input } from "baseui/input";
 import { Votes } from "./Votes";
+import { HostActionPanes } from "./HostActionPanel";
 
 const ROOM_QUERY = gql`
   query Room($id: ID!) {
@@ -87,6 +88,9 @@ export function Room() {
     <>
       <FlexGrid flexGridColumnCount={3}>
         <FlexGridItem>{JSON.stringify(data)}</FlexGridItem>
+        <FlexGridItem>
+          <HostActionPanes />
+        </FlexGridItem>
         <FlexGridItem>
           <Votes />
         </FlexGridItem>
