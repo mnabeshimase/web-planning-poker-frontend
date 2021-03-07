@@ -1,10 +1,12 @@
-import { gql, useQuery, useSubscription } from "@apollo/client";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { gql, useQuery, useSubscription } from "@apollo/client";
+import { ListItem, ListItemLabel } from "baseui/list";
 
 const LIST_STORIES_BY_ROOM_ID_QUERY = gql`
   query ListStoriesByRoomId($id: ID!) {
     listStoriesByRoomId(id: $id) {
+      id
       description
     }
   }
@@ -13,6 +15,7 @@ const LIST_STORIES_BY_ROOM_ID_QUERY = gql`
 const STORY_CREATED_SUBSCRIPTION = gql`
   subscription StoryCreated {
     storyCreated {
+      id
       description
     }
   }
@@ -51,5 +54,13 @@ export const Stories = () => {
     return <div>Loading</div>;
   }
 
-  return <div>{JSON.stringify(stories)}</div>;
+  return (
+    <ul>
+      {stories.map((story) => (
+        <ListItem key={story.id}>
+          <ListItemLabel>{story.description}</ListItemLabel>
+        </ListItem>
+      ))}
+    </ul>
+  );
 };
