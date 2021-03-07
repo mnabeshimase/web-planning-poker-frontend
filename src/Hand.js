@@ -5,7 +5,7 @@ import { Card } from "./Card";
 
 export const Hand = (props) => {
   const { userId } = props;
-  const cardValues = [0, 0.5, 1, 2, 3, 5, 8, 13];
+  const cardValues = ["0", "0.5", "1", "2", "3", "5", "8", "13"];
   const [selectedCard, setSelectedCard] = useState();
   return (
     <>
