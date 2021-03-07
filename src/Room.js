@@ -15,6 +15,7 @@ import { FormControl } from "baseui/form-control";
 import { Users } from "./Users";
 import { Hand } from "./Hand";
 import { Input } from "baseui/input";
+import { Votes } from "./Votes";
 
 const ROOM_QUERY = gql`
   query Room($id: ID!) {
@@ -84,6 +85,9 @@ export function Room() {
     <>
       <FlexGrid flexGridColumnCount={3}>
         <FlexGridItem>{JSON.stringify(data)}</FlexGridItem>
+        <FlexGridItem>
+          <Votes />
+        </FlexGridItem>
         <FlexGridItem>
           <Users />
         </FlexGridItem>
