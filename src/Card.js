@@ -43,6 +43,7 @@ export const Card = (props) => {
 
   return (
     <Button
+      disabled={!storyId}
       isSelected={isSelected}
       onClick={() => {
         setSelectedCard(value);
