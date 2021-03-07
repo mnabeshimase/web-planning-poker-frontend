@@ -17,7 +17,7 @@ import { Input } from "baseui/input";
 import { Votes } from "./Votes";
 import { HostActionPanes } from "./HostActionPanel";
 import { Stories } from "./Stories";
-import { StoryActionsPanel } from "./StoryActionsPanel";
+import { StoryActionsPanel } from "./StoryActionsPanel/StoryActionsPanel";
 import { StoryMetadata } from "./StoryMedatada";
 
 const ROOM_QUERY = gql`

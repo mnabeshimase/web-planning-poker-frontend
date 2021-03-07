@@ -43,7 +43,10 @@ export const StoryActionsPanel = () => {
         Add Story
       </Button>
       <Modal
-        onClose={() => setIsStoryModalOpen(false)}
+        onClose={() => {
+          setIsStoryModalOpen(false);
+          setDescriptionInput("");
+        }}
         isOpen={isStoryModalOpen}
       >
         <ModalHeader>Add Story</ModalHeader>
