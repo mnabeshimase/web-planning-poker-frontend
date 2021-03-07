@@ -1,5 +1,5 @@
 import { useParams } from "react-router";
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery, useSubscription } from "@apollo/client";
 import { Button } from "baseui/button";
 import { ButtonGroup } from "baseui/button-group";
 import { styled } from "baseui";
@@ -18,6 +18,14 @@ const ROOM_QUERY = gql`
 const UPDATE_ROOM_MUTATION = gql`
   mutation UpdateRoom($updateRoomInput: UpdateRoomInput!) {
     updateRoom(updateRoomInput: $updateRoomInput) {
+      phase
+    }
+  }
+`;
+
+const ROOM_UPDATED_SUBSCRIPTION = gql`
+  subscription RoomUpdated {
+    roomUpdated {
       phase
     }
   }
@@ -46,16 +54,31 @@ export const HostActionPanes = () => {
     variables: { id: roomId },
   });
   const [updateRoom] = useMutation(UPDATE_ROOM_MUTATION);
+  const { data: roomUpdatedData } = useSubscription(ROOM_UPDATED_SUBSCRIPTION);
 
   if (roomLoading) {
     return <div>loading</div>;
   }
 
   const { room } = roomData;
+  const phase = roomUpdatedData?.roomUpdated.phase || room.phase;
   return (
     <Outline>
-      {room.phase === "INIT" && <Button {...ButtonOverride}>Start</Button>}
-      {(room.phase === "VOTE" || room.phase === "DISCUSSION") && (
+      {phase === "INIT" && (
+        <Button
+          {...ButtonOverride}
+          onClick={() => {
+            updateRoom({
+              variables: {
+                updateRoomInput: { id: roomId, phase: "VOTE" },
+              },
+            });
+          }}
+        >
+          Start
+        </Button>
+      )}
+      {(phase === "VOTE" || phase === "DISCUSSION") && (
         <ButtonGroup>
           <Button
             onClick={() =>
