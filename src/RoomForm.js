@@ -6,10 +6,11 @@ import { Input } from "baseui/input";
 import { FormControl } from "baseui/form-control";
 import { styled } from "baseui";
 
-const CREATE_ROOM_MUTATION = gql`
-  mutation CreateRoom {
-    createRoom {
-      id
+const CREATE_USER_MUTATION = gql`
+  mutation CreateUser($name: String!, $roomId: ID) {
+    createUser(name: $name, roomId: $roomId) {
+      name
+      roomId
     }
   }
 `;
@@ -29,15 +30,15 @@ const ActionsPanel = styled("div", {
 export const RoomForm = () => {
   const history = useHistory();
   // TODO: Handle loading and error state
-  const [createRoom, { data }] = useMutation(CREATE_ROOM_MUTATION);
+  const [createUser, { data }] = useMutation(CREATE_USER_MUTATION);
   const [userName, setUserName] = useState();
 
   useEffect(() => {
     if (data) {
       const {
-        createRoom: { id },
+        createUser: { roomId },
       } = data;
-      const roomRoute = ["room", id].join("/");
+      const roomRoute = ["room", roomId].join("/");
       return history.push(roomRoute);
     }
   }, [data, history]);
@@ -48,7 +49,10 @@ export const RoomForm = () => {
         <Input value={userName} onChange={(e) => setUserName(e.target.value)} />
       </FormControl>
       <ActionsPanel>
-        <Button disabled={!userName} onClick={createRoom}>
+        <Button
+          disabled={!userName}
+          onClick={() => createUser({ variables: { name: userName } })}
+        >
           Create Room
         </Button>
       </ActionsPanel>
