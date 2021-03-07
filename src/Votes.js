@@ -1,6 +1,8 @@
 import { gql, useQuery, useSubscription } from "@apollo/client";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { Card, StyledBody } from "baseui/card";
+import { styled } from "baseui";
 
 const LIST_VOTES_BY_ROOM_ID_QUERY = gql`
   query ListVotesByRoomId($id: ID!) {
@@ -21,6 +23,12 @@ const VOTE_UPSERTED_SUBSCRIPTION = gql`
   }
 `;
 
+const Vote = styled("div", {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+});
+
 export const Votes = () => {
   const { roomId } = useParams();
   // TODO: handle error state
@@ -33,7 +41,7 @@ export const Votes = () => {
   const { data: voteUpsertedDate } = useSubscription(
     VOTE_UPSERTED_SUBSCRIPTION
   );
-  const [votes, setVotes] = useState();
+  const [votes, setVotes] = useState([]);
 
   useEffect(() => {
     if (listVotesByRoomIdData) {
@@ -66,5 +74,16 @@ export const Votes = () => {
     return <div>loading</div>;
   }
 
-  return <div>{JSON.stringify(votes)}</div>;
+  return (
+    <div>
+      {votes.map((vote) => (
+        <Vote>
+          <Card>
+            <StyledBody>{vote.score}</StyledBody>
+          </Card>
+          <span>{vote.userId}</span>
+        </Vote>
+      ))}
+    </div>
+  );
 };
