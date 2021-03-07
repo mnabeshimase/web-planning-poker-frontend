@@ -4,11 +4,16 @@ import { useParams } from "react-router";
 import { Card, StyledBody } from "baseui/card";
 import { styled } from "baseui";
 
-const LIST_VOTES_BY_ROOM_ID_QUERY = gql`
-  query ListVotesByRoomId($id: ID!) {
-    listVotesByRoomId(id: $id) {
-      userId
-      score
+const ROOM_QUERY = gql`
+  query Room($id: ID!) {
+    room(id: $id) {
+      room {
+        phase
+      }
+      votes {
+        userId
+        score
+      }
     }
   }
 `;
@@ -23,6 +28,14 @@ const VOTE_UPSERTED_SUBSCRIPTION = gql`
   }
 `;
 
+const ROOM_UPDATED_SUBSCRIPTION = gql`
+  subscription RoomUpdated {
+    roomUpdated {
+      phase
+    }
+  }
+`;
+
 const Vote = styled("div", {
   display: "flex",
   justifyContent: "center",
@@ -32,27 +45,29 @@ const Vote = styled("div", {
 export const Votes = () => {
   const { roomId } = useParams();
   // TODO: handle error state
-  const { data: listVotesByRoomIdData, loading } = useQuery(
-    LIST_VOTES_BY_ROOM_ID_QUERY,
-    {
-      variables: { id: roomId },
-    }
-  );
-  const { data: voteUpsertedDate } = useSubscription(
+  const { data: roomData, loading } = useQuery(ROOM_QUERY, {
+    variables: { id: roomId },
+  });
+  const { data: voteUpsertedData } = useSubscription(
     VOTE_UPSERTED_SUBSCRIPTION
   );
+  const { data: roomUpdatedData } = useSubscription(ROOM_UPDATED_SUBSCRIPTION);
   const [votes, setVotes] = useState([]);
+  const [phase, setPhase] = useState();
 
   useEffect(() => {
-    if (listVotesByRoomIdData) {
-      const { listVotesByRoomId } = listVotesByRoomIdData;
-      setVotes(listVotesByRoomId);
+    if (roomData) {
+      const {
+        room: { phase, votes },
+      } = roomData;
+      setVotes(votes);
+      setPhase(phase);
     }
-  }, [listVotesByRoomIdData]);
+  }, [roomData]);
 
   useEffect(() => {
-    if (voteUpsertedDate) {
-      const { voteUpserted } = voteUpsertedDate;
+    if (voteUpsertedData) {
+      const { voteUpserted } = voteUpsertedData;
       const oldVoteIdx = votes.findIndex(
         (vote) =>
           vote.userId === voteUpserted.userId &&
@@ -68,7 +83,16 @@ export const Votes = () => {
       setVotes([...votes, voteUpserted]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [voteUpsertedDate]);
+  }, [voteUpsertedData]);
+
+  useEffect(() => {
+    if (roomUpdatedData) {
+      const {
+        roomUpdated: { phase },
+      } = roomUpdatedData;
+      setPhase(phase);
+    }
+  }, [roomUpdatedData]);
 
   if (loading) {
     return <div>loading</div>;
@@ -79,7 +103,7 @@ export const Votes = () => {
       {votes.map((vote) => (
         <Vote>
           <Card>
-            <StyledBody>{vote.score}</StyledBody>
+            <StyledBody>{phase === "DISCUSSION" && vote.score}</StyledBody>
           </Card>
           <span>{vote.userId}</span>
         </Vote>
