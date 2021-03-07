@@ -47,37 +47,38 @@ export const StoryActionsPanel = () => {
         isOpen={isStoryModalOpen}
       >
         <ModalHeader>Add Story</ModalHeader>
-        <ModalBody>
-          <FormControl label="Description">
-            <Textarea
-              value={descriptionInput}
-              onChange={(e) => setDescriptionInput(e.target.value)}
-            />
-          </FormControl>
-        </ModalBody>
-        <ModalFooter>
-          <ModalButton
-            kind={KIND.secondary}
-            size={SIZE.large}
-            onClick={() => setIsStoryModalOpen(false)}
-          >
-            Cancel
-          </ModalButton>
-          <ModalButton
-            size={SIZE.large}
-            isLoading={createStoryLoading}
-            onClick={() => {
-              createStory({
-                variables: {
-                  description: descriptionInput,
-                  roomId,
-                },
-              });
-            }}
-          >
-            Create
-          </ModalButton>
-        </ModalFooter>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            createStory({
+              variables: {
+                description: descriptionInput,
+                roomId,
+              },
+            });
+          }}
+        >
+          <ModalBody>
+            <FormControl label="Description">
+              <Textarea
+                value={descriptionInput}
+                onChange={(e) => setDescriptionInput(e.target.value)}
+              />
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <ModalButton
+              kind={KIND.secondary}
+              size={SIZE.large}
+              onClick={() => setIsStoryModalOpen(false)}
+            >
+              Cancel
+            </ModalButton>
+            <ModalButton size={SIZE.large} isLoading={createStoryLoading}>
+              Create
+            </ModalButton>
+          </ModalFooter>
+        </form>
       </Modal>
     </div>
   );

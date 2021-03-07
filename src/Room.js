@@ -136,27 +136,31 @@ export function Room() {
         role={ROLE.dialog}
       >
         <ModalHeader>Join Room</ModalHeader>
-        <ModalBody>
-          <FormControl label="Username">
-            <Input
-              value={userNameInput}
-              onChange={(e) => setUserNameInput(e.target.value)}
-            />
-          </FormControl>
-        </ModalBody>
-        <ModalFooter>
-          <ModalButton
-            disabled={!userNameInput}
-            isLoading={createUserLoading}
-            onClick={() => {
-              createUser({
-                variables: { name: userNameInput, roomId },
-              });
-            }}
-          >
-            Enter
-          </ModalButton>
-        </ModalFooter>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            createUser({
+              variables: { name: userNameInput, roomId },
+            });
+          }}
+        >
+          <ModalBody>
+            <FormControl label="Username">
+              <Input
+                value={userNameInput}
+                onChange={(e) => setUserNameInput(e.target.value)}
+              />
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <ModalButton
+              disabled={!userNameInput}
+              isLoading={createUserLoading}
+            >
+              Enter
+            </ModalButton>
+          </ModalFooter>
+        </form>
       </Modal>
     </>
   );

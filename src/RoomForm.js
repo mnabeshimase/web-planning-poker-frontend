@@ -46,17 +46,22 @@ export const RoomForm = () => {
 
   return (
     <Outline>
-      <FormControl label="Username">
-        <Input value={userName} onChange={(e) => setUserName(e.target.value)} />
-      </FormControl>
-      <ActionsPanel>
-        <Button
-          disabled={!userName}
-          onClick={() => createUser({ variables: { name: userName } })}
-        >
-          Create Room
-        </Button>
-      </ActionsPanel>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          createUser({ variables: { name: userName } });
+        }}
+      >
+        <FormControl label="Username">
+          <Input
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
+          />
+        </FormControl>
+        <ActionsPanel>
+          <Button disabled={!userName}>Create Room</Button>
+        </ActionsPanel>
+      </form>
     </Outline>
   );
 };
