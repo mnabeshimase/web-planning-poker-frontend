@@ -6,6 +6,7 @@ import { styled } from "baseui";
 import { useEffect, useState } from "react";
 
 const DISCUSSION = "DISCUSSION";
+const VOTE = "VOTE";
 
 const ROOM_QUERY = gql`
   query Room($id: ID!) {
@@ -110,7 +111,7 @@ export const HostActionPanes = () => {
               variables: {
                 updateRoomInput: {
                   id: roomId,
-                  phase: "VOTE",
+                  phase: VOTE,
                   currentStoryId: stories[0].id,
                 },
               },
@@ -120,7 +121,7 @@ export const HostActionPanes = () => {
           Start
         </Button>
       )}
-      {(phase === "VOTE" || phase === "DISCUSSION") && (
+      {(phase === VOTE || phase === DISCUSSION) && (
         <ButtonGroup>
           <Button
             onClick={() =>
@@ -146,7 +147,7 @@ export const HostActionPanes = () => {
                   updateRoomInput: {
                     id: roomId,
                     currentStoryId: nextStoryId,
-                    phase: "DISCUSSION",
+                    phase: VOTE,
                   },
                 },
               });
