@@ -32,7 +32,7 @@ export const RoomForm = () => {
   const history = useHistory();
   // TODO: Handle loading and error state
   const [createUser, { data }] = useMutation(CREATE_USER_MUTATION);
-  const [userName, setUserName] = useState();
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
     if (data) {

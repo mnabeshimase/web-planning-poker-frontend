@@ -16,6 +16,8 @@ import { Hand } from "./Hand";
 import { Input } from "baseui/input";
 import { Votes } from "./Votes";
 import { HostActionPanes } from "./HostActionPanel";
+import { Stories } from "./Stories";
+import { StoryActionsPanel } from "./StoryActionsPanel";
 
 const ROOM_QUERY = gql`
   query Room($id: ID!) {
@@ -46,7 +48,7 @@ const narrowItemProps = {
     Block: {
       style: ({ $theme }) => ({
         width: $theme.sizing.scale1600,
-        flexGrow: 0,
+        // flexGrow: 0,
       }),
     },
   },
@@ -57,7 +59,7 @@ export function Room() {
   const location = useLocation();
 
   // TODO: Handle error state
-  const { loading, data } = useQuery(ROOM_QUERY, {
+  const { loading } = useQuery(ROOM_QUERY, {
     variables: { id: roomId },
   });
   const [
@@ -96,7 +98,7 @@ export function Room() {
 
   return (
     <>
-      <FlexGrid flexGridColumnCount={3}>
+      <FlexGrid flexGridColumnCount={2}>
         <FlexGridItem>
           <FlexGrid flexGridColumnCount={1}>
             <FlexGridItem>
@@ -115,7 +117,14 @@ export function Room() {
         </FlexGridItem>
 
         <FlexGridItem {...narrowItemProps}>
-          <div>RIGHT</div>
+          <FlexGrid flexGridColumnCount={1}>
+            <FlexGridItem>
+              <Stories />
+            </FlexGridItem>
+            <FlexGridItem>
+              <StoryActionsPanel />
+            </FlexGridItem>
+          </FlexGrid>
         </FlexGridItem>
       </FlexGrid>
 
