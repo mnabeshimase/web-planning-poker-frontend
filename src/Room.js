@@ -18,6 +18,7 @@ import { Votes } from "./Votes";
 import { HostActionPanes } from "./HostActionPanel";
 import { Stories } from "./Stories";
 import { StoryActionsPanel } from "./StoryActionsPanel";
+import { StoryMetadata } from "./StoryMedatada";
 
 const ROOM_QUERY = gql`
   query Room($id: ID!) {
@@ -102,7 +103,7 @@ export function Room() {
         <FlexGridItem>
           <FlexGrid flexGridColumnCount={1}>
             <FlexGridItem>
-              <div>STORY TITLE</div>
+              <StoryMetadata />
             </FlexGridItem>
             <FlexGridItem>
               <HostActionPanes />
