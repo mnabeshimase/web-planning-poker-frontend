@@ -12,7 +12,6 @@ import {
 } from "baseui/modal";
 import { FormControl } from "baseui/form-control";
 
-import { Users } from "./Users";
 import { Hand } from "./Hand";
 import { Input } from "baseui/input";
 import { Votes } from "./Votes";
@@ -41,6 +40,17 @@ const DELETE_USER_MUTATION = gql`
     }
   }
 `;
+
+const narrowItemProps = {
+  overrides: {
+    Block: {
+      style: ({ $theme }) => ({
+        width: $theme.sizing.scale1600,
+        flexGrow: 0,
+      }),
+    },
+  },
+};
 
 export function Room() {
   const { roomId } = useParams();
@@ -87,20 +97,25 @@ export function Room() {
   return (
     <>
       <FlexGrid flexGridColumnCount={3}>
-        <FlexGridItem>{JSON.stringify(data)}</FlexGridItem>
         <FlexGridItem>
-          <HostActionPanes />
+          <FlexGrid flexGridColumnCount={1}>
+            <FlexGridItem>
+              <div>STORY TITLE</div>
+            </FlexGridItem>
+            <FlexGridItem>
+              <HostActionPanes />
+            </FlexGridItem>
+            <FlexGridItem>
+              <Votes />
+            </FlexGridItem>
+            <FlexGridItem>
+              <Hand userId={userId} />
+            </FlexGridItem>
+          </FlexGrid>
         </FlexGridItem>
-        <FlexGridItem>
-          <Votes />
-        </FlexGridItem>
-        <FlexGridItem>
-          <Users />
-        </FlexGridItem>
-        <FlexGridItem display="none" />
 
-        <FlexGridItem>
-          <Hand userId={userId} />
+        <FlexGridItem {...narrowItemProps}>
+          <div>RIGHT</div>
         </FlexGridItem>
       </FlexGrid>
 

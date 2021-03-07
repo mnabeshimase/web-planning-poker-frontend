@@ -28,7 +28,12 @@ export const Card = (props) => {
       }}
       overrides={{
         BaseButton: {
-          style: { fontSize: "4em", height: "4em", width: "100%" },
+          style: ({ $theme }) => ({
+            fontSize: "4em",
+            height: "4em",
+            width: "100%",
+            borderRadius: $theme.borders.radius400,
+          }),
         },
       }}
     >

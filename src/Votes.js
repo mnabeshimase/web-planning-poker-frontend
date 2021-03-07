@@ -36,11 +36,18 @@ const ROOM_UPDATED_SUBSCRIPTION = gql`
   }
 `;
 
-const Vote = styled("div", {
+const Outline = styled("div", {
   display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
+  flexWrap: "wrap",
+  height: "40em",
+  alignContent: "flex-start",
 });
+
+const Vote = styled("div", ({ $theme }) => ({
+  display: "flex",
+  width: "16em",
+  margin: $theme.sizing.scale800,
+}));
 
 export const Votes = () => {
   const { roomId } = useParams();
@@ -99,15 +106,25 @@ export const Votes = () => {
   }
 
   return (
-    <div>
+    <Outline>
       {votes.map((vote) => (
         <Vote>
-          <Card>
+          <Card
+            overrides={{
+              Root: {
+                style: ({ $theme }) => ({
+                  height: "4em",
+                  width: "4em",
+                  marginRight: $theme.sizing.scale400,
+                }),
+              },
+            }}
+          >
             <StyledBody>{phase === "DISCUSSION" && vote.score}</StyledBody>
           </Card>
           <span>{vote.userId}</span>
         </Vote>
       ))}
-    </div>
+    </Outline>
   );
 };
