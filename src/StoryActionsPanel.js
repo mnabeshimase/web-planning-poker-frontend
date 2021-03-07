@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, KIND, SIZE } from "baseui/button";
 import {
   Modal,
@@ -9,10 +9,30 @@ import {
 } from "baseui/modal";
 import { Textarea } from "baseui/textarea";
 import { FormControl } from "baseui/form-control";
+import { gql, useMutation } from "@apollo/client";
+import { useParams } from "react-router";
 
+const CREATE_STORY_MUTATION = gql`
+  mutation CreateStory($roomId: ID!, $description: String!) {
+    createStory(roomId: $roomId, description: $description) {
+      description
+    }
+  }
+`;
 export const StoryActionsPanel = () => {
+  const { roomId } = useParams();
+  const [
+    createStory,
+    { data: createStoryData, loading: createStoryLoading },
+  ] = useMutation(CREATE_STORY_MUTATION);
   const [isStoryModalOpen, setIsStoryModalOpen] = useState(false);
   const [descriptionInput, setDescriptionInput] = useState("");
+
+  useEffect(() => {
+    if (createStoryData && !createStoryLoading) {
+      setIsStoryModalOpen(false);
+    }
+  }, [createStoryData, createStoryLoading]);
 
   return (
     <div style={{ width: "100%" }}>
@@ -43,7 +63,20 @@ export const StoryActionsPanel = () => {
           >
             Cancel
           </ModalButton>
-          <ModalButton size={SIZE.large}>Create</ModalButton>
+          <ModalButton
+            size={SIZE.large}
+            isLoading={createStoryLoading}
+            onClick={() => {
+              createStory({
+                variables: {
+                  description: descriptionInput,
+                  roomId,
+                },
+              });
+            }}
+          >
+            Create
+          </ModalButton>
         </ModalFooter>
       </Modal>
     </div>
