@@ -1,10 +1,20 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { useEffect, useRef } from "react";
-import { useParams } from "react-router";
+import { useEffect, useState } from "react";
+import { useLocation, useParams } from "react-router";
 import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
+import {
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  ModalButton,
+  ROLE,
+} from "baseui/modal";
+import { FormControl } from "baseui/form-control";
 
 import { Users } from "./Users";
 import { Hand } from "./Hand";
+import { Input } from "baseui/input";
 
 const ROOM_QUERY = gql`
   query Room($id: ID!) {
@@ -15,7 +25,7 @@ const ROOM_QUERY = gql`
 `;
 
 const CREATE_USER_MUTATION = gql`
-  mutation CreateUser($name: String!, $roomId: ID!) {
+  mutation CreateUser($name: String!, $roomId: ID) {
     createUser(name: $name, roomId: $roomId) {
       id
       name
@@ -32,22 +42,25 @@ const DELETE_USER_MUTATION = gql`
 
 export function Room() {
   const { roomId } = useParams();
+  const location = useLocation();
+
   // TODO: Handle error state
   const { loading, data } = useQuery(ROOM_QUERY, {
     variables: { id: roomId },
   });
-  const [createUser, { data: createUserData }] = useMutation(
-    CREATE_USER_MUTATION
-  );
+  const [
+    createUser,
+    { data: createUserData, loading: createUserLoading },
+  ] = useMutation(CREATE_USER_MUTATION);
   const [deleteUser] = useMutation(DELETE_USER_MUTATION);
-  const userName = useRef("user" + Date.now().toString());
+  const [userNameInput, setUserNameInput] = useState();
+  const [isModalOpen, setIsModalOpen] = useState(!location.state?.isHostUser); // TODO: replace location state with auth
 
-  // TODO: add a form for user creation
   useEffect(() => {
-    createUser({
-      variables: { name: userName.current, roomId },
-    });
-  }, [createUser, roomId]);
+    if (createUserData) {
+      setIsModalOpen(false);
+    }
+  }, [createUserData]);
 
   // Remove user from the room on unmount
   useEffect(() => {
@@ -68,16 +81,47 @@ export function Room() {
   }
 
   return (
-    <FlexGrid flexGridColumnCount={3}>
-      <FlexGridItem>{JSON.stringify(data)}</FlexGridItem>
-      <FlexGridItem>
-        <Users />
-      </FlexGridItem>
-      <FlexGridItem display="none" />
+    <>
+      <FlexGrid flexGridColumnCount={3}>
+        <FlexGridItem>{JSON.stringify(data)}</FlexGridItem>
+        <FlexGridItem>
+          <Users />
+        </FlexGridItem>
+        <FlexGridItem display="none" />
 
-      <FlexGridItem>
-        <Hand />
-      </FlexGridItem>
-    </FlexGrid>
+        <FlexGridItem>
+          <Hand />
+        </FlexGridItem>
+      </FlexGrid>
+      <Modal
+        autoFocus
+        closeable={false}
+        isOpen={isModalOpen}
+        role={ROLE.dialog}
+      >
+        <ModalHeader>Join Room</ModalHeader>
+        <ModalBody>
+          <FormControl label="Username">
+            <Input
+              value={userNameInput}
+              onChange={(e) => setUserNameInput(e.target.value)}
+            />
+          </FormControl>
+        </ModalBody>
+        <ModalFooter>
+          <ModalButton
+            disabled={!userNameInput}
+            isLoading={createUserLoading}
+            onClick={() => {
+              createUser({
+                variables: { name: userNameInput, roomId },
+              });
+            }}
+          >
+            Enter
+          </ModalButton>
+        </ModalFooter>
+      </Modal>
+    </>
   );
 }

@@ -39,7 +39,7 @@ export const RoomForm = () => {
         createUser: { roomId },
       } = data;
       const roomRoute = ["room", roomId].join("/");
-      return history.push(roomRoute);
+      return history.push(roomRoute, { isHostUser: true }); // TODO: replace location state with auth
     }
   }, [data, history]);
 
