@@ -69,6 +69,7 @@ export const StoryActionsPanel = () => {
                 roomId,
               },
             });
+            setDescriptionInput("");
           }}
         >
           <ModalBody>
