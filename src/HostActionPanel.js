@@ -34,6 +34,7 @@ const ROOM_UPDATED_SUBSCRIPTION = gql`
   subscription RoomUpdated {
     roomUpdated {
       phase
+      currentStoryId
     }
   }
 `;
@@ -96,9 +97,9 @@ export const HostActionPanes = () => {
   }
 
   const { room } = roomData;
-  const phase = roomUpdatedData?.roomUpdated.phase || room.phase;
+  const { phase, currentStoryId } = roomUpdatedData?.roomUpdated || room;
   const nextStoryId =
-    stories[stories.findIndex((story) => story.id === stories[0].id) + 1]?.id;
+    stories[stories.findIndex((story) => story.id === currentStoryId) + 1]?.id;
 
   return (
     <Outline>
