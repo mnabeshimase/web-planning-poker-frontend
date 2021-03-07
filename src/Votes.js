@@ -7,23 +7,16 @@ import { styled } from "baseui";
 const ROOM_QUERY = gql`
   query Room($id: ID!) {
     room(id: $id) {
-      room {
-        phase
+      phase
+      currentStoryId
+      stories {
+        id
+        votes {
+          id
+          userId
+          score
+        }
       }
-      votes {
-        userId
-        score
-      }
-    }
-  }
-`;
-
-const VOTE_UPSERTED_SUBSCRIPTION = gql`
-  subscription VoteUpserted {
-    voteUpserted {
-      userId
-      roomId
-      score
     }
   }
 `;
@@ -32,6 +25,26 @@ const ROOM_UPDATED_SUBSCRIPTION = gql`
   subscription RoomUpdated {
     roomUpdated {
       phase
+      currentStoryId
+    }
+  }
+`;
+
+const VOTE_UPSERTED_SUBSCRIPTION = gql`
+  subscription VoteUpserted {
+    voteUpserted {
+      userId
+      storyId
+      score
+    }
+  }
+`;
+
+const STORY_CREATED_SUBSCRIPTION = gql`
+  subscription StoryCreated {
+    storyCreated {
+      id
+      description
     }
   }
 `;
@@ -55,59 +68,83 @@ export const Votes = () => {
   const { data: roomData, loading } = useQuery(ROOM_QUERY, {
     variables: { id: roomId },
   });
+  const { data: roomUpdatedData } = useSubscription(ROOM_UPDATED_SUBSCRIPTION);
+  const { data: storyCreatedData } = useSubscription(
+    STORY_CREATED_SUBSCRIPTION
+  );
   const { data: voteUpsertedData } = useSubscription(
     VOTE_UPSERTED_SUBSCRIPTION
   );
-  const { data: roomUpdatedData } = useSubscription(ROOM_UPDATED_SUBSCRIPTION);
-  const [votes, setVotes] = useState([]);
-  const [phase, setPhase] = useState();
+  // const [stories, setStories] = useState([]);
+  const [room, setRoom] = useState();
 
   useEffect(() => {
     if (roomData) {
-      const {
-        room: { phase, votes },
-      } = roomData;
-      setVotes(votes);
-      setPhase(phase);
+      const { room } = roomData;
+      setRoom(room);
     }
   }, [roomData]);
 
   useEffect(() => {
+    if (roomUpdatedData) {
+      const { roomUpdated } = roomUpdatedData;
+      setRoom({ ...room, ...roomUpdated });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [roomUpdatedData]);
+
+  useEffect(() => {
     if (voteUpsertedData) {
       const { voteUpserted } = voteUpsertedData;
-      const oldVoteIdx = votes.findIndex(
-        (vote) =>
-          vote.userId === voteUpserted.userId &&
-          vote.roomId === voteUpserted.roomId
+      const storyIdx = room?.stories.findIndex(
+        (story) => story.id === voteUpserted.storyId
       );
-      if (oldVoteIdx >= 0) {
-        return setVotes([
-          ...votes.slice(0, oldVoteIdx),
-          { ...votes[oldVoteIdx], score: voteUpserted.score },
-          ...votes.slice(oldVoteIdx + 1),
-        ]);
-      }
-      setVotes([...votes, voteUpserted]);
+      const voteIdx = room?.stories[storyIdx]?.votes?.findIndex(
+        (vote) => vote.userId === voteUpserted.userId
+      );
+      const currentVotes = room?.stories[storyIdx].votes || [];
+      const newVotes =
+        voteIdx < 0
+          ? [...currentVotes, voteUpserted]
+          : [
+              ...currentVotes.slice(0, voteIdx),
+              voteUpserted,
+              ...currentVotes.slice(voteIdx + 1),
+            ];
+      const currentStories = room?.stories || [];
+      const newStories = [
+        ...currentStories.slice(0, storyIdx),
+        { ...currentStories[storyIdx], votes: newVotes },
+        ...currentStories.slice(storyIdx + 1),
+      ];
+      return setRoom({ ...room, stories: newStories });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [voteUpsertedData]);
 
   useEffect(() => {
-    if (roomUpdatedData) {
-      const {
-        roomUpdated: { phase },
-      } = roomUpdatedData;
-      setPhase(phase);
+    if (storyCreatedData) {
+      const { storyCreated } = storyCreatedData;
+      setRoom({
+        ...room,
+        stories: [...room.stories, storyCreated],
+      });
     }
-  }, [roomUpdatedData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storyCreatedData]);
 
   if (loading) {
     return <div>loading</div>;
   }
 
+  const phase = room?.phase;
+  const story = room?.stories.find(
+    (story) => story.id === room?.currentStoryId
+  );
+  const votes = story?.votes;
   return (
     <Outline>
-      {votes.map((vote) => (
+      {votes?.map((vote) => (
         <Vote>
           <Card
             overrides={{
