@@ -54,12 +54,14 @@ export function Room() {
     { data: createUserData, loading: createUserLoading },
   ] = useMutation(CREATE_USER_MUTATION);
   const [deleteUser] = useMutation(DELETE_USER_MUTATION);
+  const [userId, setUserId] = useState();
   const [userNameInput, setUserNameInput] = useState();
   const [isModalOpen, setIsModalOpen] = useState(!location.state?.isHostUser); // TODO: replace location state with auth
 
   useEffect(() => {
     if (createUserData) {
       setIsModalOpen(false);
+      setUserId(createUserData.createUser.id); //TODO: replace with auth
     }
   }, [createUserData]);
 
@@ -94,9 +96,10 @@ export function Room() {
         <FlexGridItem display="none" />
 
         <FlexGridItem>
-          <Hand />
+          <Hand userId={userId} />
         </FlexGridItem>
       </FlexGrid>
+
       <Modal
         autoFocus
         closeable={false}

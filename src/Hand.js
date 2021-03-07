@@ -3,7 +3,8 @@ import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
 
 import { Card } from "./Card";
 
-export const Hand = () => {
+export const Hand = (props) => {
+  const { userId } = props;
   const cardValues = [0, 0.5, 1, 2, 3, 5, 8, 13];
   const [selectedCard, setSelectedCard] = useState();
   return (
@@ -19,6 +20,7 @@ export const Hand = () => {
               value={value}
               isSelected={value === selectedCard}
               setSelectedCard={setSelectedCard}
+              userId={userId}
             />
           </FlexGridItem>
         ))}
