@@ -58,6 +58,7 @@ const narrowItemProps = {
 export function Room() {
   const { roomId } = useParams();
   const location = useLocation();
+  const isHost = location.state?.isHostUser; // TODO: replace location state with auth
 
   // TODO: Handle error state
   const { loading } = useQuery(ROOM_QUERY, {
@@ -70,7 +71,7 @@ export function Room() {
   const [deleteUser] = useMutation(DELETE_USER_MUTATION);
   const [userId, setUserId] = useState();
   const [userNameInput, setUserNameInput] = useState();
-  const [isModalOpen, setIsModalOpen] = useState(!location.state?.isHostUser); // TODO: replace location state with auth
+  const [isModalOpen, setIsModalOpen] = useState(!isHost);
 
   useEffect(() => {
     if (createUserData) {
@@ -105,9 +106,7 @@ export function Room() {
             <FlexGridItem>
               <StoryMetadata />
             </FlexGridItem>
-            <FlexGridItem>
-              <HostActionPanes />
-            </FlexGridItem>
+            <FlexGridItem>{isHost && <HostActionPanes />}</FlexGridItem>
             <FlexGridItem>
               <Votes />
             </FlexGridItem>
