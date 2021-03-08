@@ -10,6 +10,7 @@ const CREATE_USER_MUTATION = gql`
   mutation CreateUser($roomId: ID, $name: String!) {
     createUser(roomId: $roomId, name: $name) {
       name
+      id
       roomId
     }
   }
@@ -37,10 +38,10 @@ export const RoomForm = () => {
   useEffect(() => {
     if (data) {
       const {
-        createUser: { roomId },
+        createUser: { id, roomId },
       } = data;
       const roomRoute = ["room", roomId].join("/");
-      return history.push(roomRoute, { isHostUser: true }); // TODO: replace location state with auth
+      return history.push(roomRoute, { isHostUser: true, hostUserId: id }); // TODO: replace location state with auth
     }
   }, [data, history]);
 

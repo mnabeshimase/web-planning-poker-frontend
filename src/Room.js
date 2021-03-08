@@ -59,6 +59,7 @@ export function Room() {
   const { roomId } = useParams();
   const location = useLocation();
   const isHost = location.state?.isHostUser; // TODO: replace location state with auth
+  const hostUserId = location.state?.hostUserId;
 
   // TODO: Handle error state
   const { loading } = useQuery(ROOM_QUERY, {
@@ -111,7 +112,7 @@ export function Room() {
               <Votes />
             </FlexGridItem>
             <FlexGridItem>
-              <Hand userId={userId} />
+              <Hand userId={isHost ? hostUserId : userId} />
             </FlexGridItem>
           </FlexGrid>
         </FlexGridItem>
