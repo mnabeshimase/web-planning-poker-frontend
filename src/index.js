@@ -16,9 +16,9 @@ import { LightTheme, BaseProvider } from "baseui";
 
 import { Room } from "./Room";
 import { Home } from "./Home";
-import reportWebVitals from "./reportWebVitals";
 import { Header } from "./Header";
-
+import { NotFound } from "./NotFound";
+import reportWebVitals from "./reportWebVitals";
 // eslint-disable-next-line no-unused-vars
 import NormalizeCSS from "./normalize.css";
 
@@ -62,6 +62,7 @@ ReactDOM.render(
               <Route exact path="/room/:roomId">
                 <Room />
               </Route>
+              <Route component={NotFound} />
             </Switch>
           </Router>
         </BaseProvider>
