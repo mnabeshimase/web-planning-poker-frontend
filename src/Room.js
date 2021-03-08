@@ -29,8 +29,8 @@ const ROOM_QUERY = gql`
 `;
 
 const CREATE_USER_MUTATION = gql`
-  mutation CreateUser($name: String!, $roomId: ID) {
-    createUser(name: $name, roomId: $roomId) {
+  mutation CreateUser($roomId: ID, $name: String!) {
+    createUser(roomId: $roomId, name: $name) {
       id
       name
     }
