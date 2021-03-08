@@ -18,8 +18,8 @@ const ROOM_QUERY = gql`
 `;
 
 const STORY_CREATED_SUBSCRIPTION = gql`
-  subscription StoryCreated {
-    storyCreated {
+  subscription StoryCreated($roomId: ID!) {
+    storyCreated(roomId: $roomId) {
       id
       description
     }
@@ -27,8 +27,8 @@ const STORY_CREATED_SUBSCRIPTION = gql`
 `;
 
 const ROOM_UPDATED_SUBSCRIPTION = gql`
-  subscription RoomUpdated {
-    roomUpdated {
+  subscription RoomUpdated($roomId: ID!) {
+    roomUpdated(roomId: $roomId) {
       currentStoryId
     }
   }
@@ -45,9 +45,14 @@ export const StoryMetadata = () => {
   const { data: roomData, loading: roomLoading } = useQuery(ROOM_QUERY, {
     variables: { id: roomId },
   });
-  const { data: roomUpdatedData } = useSubscription(ROOM_UPDATED_SUBSCRIPTION);
+  const { data: roomUpdatedData } = useSubscription(ROOM_UPDATED_SUBSCRIPTION, {
+    variables: { roomId },
+  });
   const { data: storyCreatedData } = useSubscription(
-    STORY_CREATED_SUBSCRIPTION
+    STORY_CREATED_SUBSCRIPTION,
+    {
+      variables: { roomId },
+    }
   );
   const [stories, setStories] = useState([]);
 

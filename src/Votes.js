@@ -12,7 +12,6 @@ const ROOM_QUERY = gql`
       stories {
         id
         votes {
-          id
           userId
           score
         }
@@ -22,8 +21,8 @@ const ROOM_QUERY = gql`
 `;
 
 const ROOM_UPDATED_SUBSCRIPTION = gql`
-  subscription RoomUpdated {
-    roomUpdated {
+  subscription RoomUpdated($roomId: ID!) {
+    roomUpdated(roomId: $roomId) {
       phase
       currentStoryId
     }
@@ -31,8 +30,8 @@ const ROOM_UPDATED_SUBSCRIPTION = gql`
 `;
 
 const VOTE_UPSERTED_SUBSCRIPTION = gql`
-  subscription VoteUpserted {
-    voteUpserted {
+  subscription VoteUpserted($roomId: ID!) {
+    voteUpserted(roomId: $roomId) {
       userId
       storyId
       score
@@ -41,8 +40,8 @@ const VOTE_UPSERTED_SUBSCRIPTION = gql`
 `;
 
 const STORY_CREATED_SUBSCRIPTION = gql`
-  subscription StoryCreated {
-    storyCreated {
+  subscription StoryCreated($roomId: ID!) {
+    storyCreated(roomId: $roomId) {
       id
       description
     }
@@ -68,12 +67,20 @@ export const Votes = () => {
   const { data: roomData, loading } = useQuery(ROOM_QUERY, {
     variables: { id: roomId },
   });
-  const { data: roomUpdatedData } = useSubscription(ROOM_UPDATED_SUBSCRIPTION);
+  const { data: roomUpdatedData } = useSubscription(ROOM_UPDATED_SUBSCRIPTION, {
+    variables: { roomId },
+  });
   const { data: storyCreatedData } = useSubscription(
-    STORY_CREATED_SUBSCRIPTION
+    STORY_CREATED_SUBSCRIPTION,
+    {
+      variables: { roomId },
+    }
   );
   const { data: voteUpsertedData } = useSubscription(
-    VOTE_UPSERTED_SUBSCRIPTION
+    VOTE_UPSERTED_SUBSCRIPTION,
+    {
+      variables: { roomId },
+    }
   );
   // const [stories, setStories] = useState([]);
   const [room, setRoom] = useState();

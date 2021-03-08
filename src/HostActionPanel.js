@@ -31,8 +31,8 @@ const UPDATE_ROOM_MUTATION = gql`
 `;
 
 const ROOM_UPDATED_SUBSCRIPTION = gql`
-  subscription RoomUpdated {
-    roomUpdated {
+  subscription RoomUpdated($roomId: ID!) {
+    roomUpdated(roomId: $roomId) {
       phase
       currentStoryId
     }
@@ -40,8 +40,8 @@ const ROOM_UPDATED_SUBSCRIPTION = gql`
 `;
 
 const STORY_CREATED_SUBSCRIPTION = gql`
-  subscription StoryCreated {
-    storyCreated {
+  subscription StoryCreated($roomId: ID!) {
+    storyCreated(roomId: $roomId) {
       id
       description
     }
@@ -71,9 +71,14 @@ export const HostActionPanes = () => {
     variables: { id: roomId },
   });
   const [updateRoom] = useMutation(UPDATE_ROOM_MUTATION);
-  const { data: roomUpdatedData } = useSubscription(ROOM_UPDATED_SUBSCRIPTION);
+  const { data: roomUpdatedData } = useSubscription(ROOM_UPDATED_SUBSCRIPTION, {
+    variables: { roomId },
+  });
   const { data: StoryCreatedData } = useSubscription(
-    STORY_CREATED_SUBSCRIPTION
+    STORY_CREATED_SUBSCRIPTION,
+    {
+      variables: { roomId },
+    }
   );
   const [stories, setStories] = useState([]);
 

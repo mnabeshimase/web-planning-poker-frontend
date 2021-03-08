@@ -21,8 +21,8 @@ const ROOM_QUERY = gql`
 `;
 
 const ROOM_UPDATED_SUBSCRIPTION = gql`
-  subscription RoomUpdated {
-    roomUpdated {
+  subscription RoomUpdated($roomId: ID!) {
+    roomUpdated(roomId: $roomId) {
       currentStoryId
     }
   }
@@ -35,7 +35,9 @@ export const Card = (props) => {
     variables: { id: roomId },
   });
   const [upsertVote] = useMutation(UPSERT_VOTE_MUTATION);
-  const { data: roomUpdatedData } = useSubscription(ROOM_UPDATED_SUBSCRIPTION);
+  const { data: roomUpdatedData } = useSubscription(ROOM_UPDATED_SUBSCRIPTION, {
+    variables: { roomId },
+  });
 
   const storyId =
     roomUpdatedData?.roomUpdated.currentStoryId ||

@@ -6,15 +6,15 @@ import { ListItem, ListItemLabel } from "baseui/list";
 import { Heading, HeadingLevel } from "baseui/heading";
 
 const USER_CREATED_SUBSCRIPTION = gql`
-  subscription UserCreated {
-    userCreated {
+  subscription UserCreated($roomId: ID!) {
+    userCreated(roomId: $roomId) {
       name
     }
   }
 `;
 const USER_DELETED_SUBSCRIPTION = gql`
-  subscription UserDeleted {
-    userDeleted {
+  subscription UserDeleted($roomId: ID!) {
+    userDeleted(roomId: $roomId) {
       name
     }
   }
@@ -43,8 +43,12 @@ const List = styled("ul", {
 export const Users = () => {
   const { roomId } = useParams();
   // TODO: Handle error and loading state
-  const { data: userCreatedData } = useSubscription(USER_CREATED_SUBSCRIPTION);
-  const { data: userDeletedData } = useSubscription(USER_DELETED_SUBSCRIPTION);
+  const { data: userCreatedData } = useSubscription(USER_CREATED_SUBSCRIPTION, {
+    variables: { roomId },
+  });
+  const { data: userDeletedData } = useSubscription(USER_DELETED_SUBSCRIPTION, {
+    variables: { roomId },
+  });
   const { data: usersData, loading } = useQuery(USERS_QUERY, {
     variables: { id: roomId },
   });
