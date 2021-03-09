@@ -62,7 +62,7 @@ export function Room() {
   const hostUserId = location.state?.hostUserId;
 
   // TODO: Handle error state
-  const { loading } = useQuery(ROOM_QUERY, {
+  const { data: roomData, loading } = useQuery(ROOM_QUERY, {
     variables: { id: roomId },
   });
   const [
@@ -151,10 +151,11 @@ export function Room() {
                 onChange={(e) => setUserNameInput(e.target.value)}
               />
             </FormControl>
+            {!roomData && <span>Room does not exist</span>}
           </ModalBody>
           <ModalFooter>
             <ModalButton
-              disabled={!userNameInput}
+              disabled={!userNameInput || !roomData}
               isLoading={createUserLoading}
             >
               Enter
