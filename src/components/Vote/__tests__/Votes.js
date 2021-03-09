@@ -2,6 +2,7 @@ import { render, waitFor } from "@testing-library/react";
 import { MockedProvider } from "@apollo/client/testing";
 
 import { ROOM_QUERY, Votes } from "../Votes";
+import { PHASE } from "../../../constants";
 
 const roomId = "roomId";
 jest.mock("react-router-dom", () => ({
@@ -13,7 +14,7 @@ jest.mock("react-router-dom", () => ({
 describe("Votes", () => {
   const room = {
     id: roomId,
-    phase: "VOTE",
+    phase: PHASE.VOTE,
     currentStoryId: "currentStoryId",
   };
   const story = {

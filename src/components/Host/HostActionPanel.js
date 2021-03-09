@@ -4,9 +4,7 @@ import { Button } from "baseui/button";
 import { ButtonGroup } from "baseui/button-group";
 import { styled } from "baseui";
 import { useEffect, useState } from "react";
-
-const DISCUSSION = "DISCUSSION";
-const VOTE = "VOTE";
+import { PHASE } from "../../constants";
 
 export const ROOM_QUERY = gql`
   query Room($id: ID!) {
@@ -108,7 +106,7 @@ export const HostActionPanel = () => {
 
   return (
     <Outline>
-      {phase === "INIT" && (
+      {phase === PHASE.INIT && (
         <Button
           {...ButtonOverride}
           disabled={!stories.length}
@@ -117,7 +115,7 @@ export const HostActionPanel = () => {
               variables: {
                 updateRoomInput: {
                   id: roomId,
-                  phase: VOTE,
+                  phase: PHASE.VOTE,
                   currentStoryId: stories[0].id,
                 },
               },
@@ -127,7 +125,7 @@ export const HostActionPanel = () => {
           Start
         </Button>
       )}
-      {(phase === VOTE || phase === DISCUSSION) && (
+      {(phase === PHASE.VOTE || phase === PHASE.DISCUSSION) && (
         <ButtonGroup>
           <Button
             onClick={() =>
@@ -135,7 +133,7 @@ export const HostActionPanel = () => {
                 variables: {
                   updateRoomInput: {
                     id: roomId,
-                    phase: DISCUSSION,
+                    phase: PHASE.DISCUSSION,
                   },
                 },
               })
@@ -153,7 +151,7 @@ export const HostActionPanel = () => {
                   updateRoomInput: {
                     id: roomId,
                     currentStoryId: nextStoryId,
-                    phase: VOTE,
+                    phase: PHASE.VOTE,
                   },
                 },
               });

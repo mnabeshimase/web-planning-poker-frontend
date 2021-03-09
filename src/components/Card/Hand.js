@@ -5,6 +5,7 @@ import { Card } from "./Card";
 import { styled } from "baseui";
 import { gql, useSubscription } from "@apollo/client";
 import { useParams } from "react-router";
+import { PHASE } from "../../constants";
 
 const Outline = styled("div", ({ $theme }) => ({
   margin: $theme.sizing.scale800,
@@ -32,7 +33,7 @@ export const Hand = (props) => {
       const {
         roomUpdated: { phase },
       } = roomUpdatedData;
-      if (phase === "VOTE") {
+      if (phase === PHASE.VOTE) {
         setSelectedCard();
       }
     }

@@ -6,6 +6,7 @@ import {
   ROOM_QUERY,
   UPDATE_ROOM_MUTATION,
 } from "../HostActionPanel";
+import { PHASE } from "../../../constants";
 
 const roomId = "roomId";
 jest.mock("react-router-dom", () => ({
@@ -17,7 +18,7 @@ jest.mock("react-router-dom", () => ({
 describe("HostActionPanel", () => {
   const room = {
     id: roomId,
-    phase: "INIT",
+    phase: PHASE.INIT,
     currentStoryId: "currentStoryId",
   };
   const story = {
@@ -34,7 +35,7 @@ describe("HostActionPanel", () => {
     });
     const updateRoomMock = jest.fn();
     updateRoomMock.mockReturnValueOnce({
-      data: { updateRoom: { phase: "VOTE" } },
+      data: { updateRoom: { phase: PHASE.VOTE } },
     });
     const mocks = [
       {
@@ -50,7 +51,7 @@ describe("HostActionPanel", () => {
           variables: {
             updateRoomInput: {
               id: room.id,
-              phase: "VOTE",
+              phase: PHASE.VOTE,
               currentStoryId: story.id,
             },
           },
