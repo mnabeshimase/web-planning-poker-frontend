@@ -16,6 +16,10 @@ export const ROOM_QUERY = gql`
           score
         }
       }
+      users {
+        id
+        name
+      }
     }
   }
 `;
@@ -48,6 +52,15 @@ export const STORY_CREATED_SUBSCRIPTION = gql`
   }
 `;
 
+const USER_CREATED_SUBSCRIPTION = gql`
+  subscription UserCreated($roomId: ID!) {
+    userCreated(roomId: $roomId) {
+      id
+      name
+    }
+  }
+`;
+
 const Outline = styled("div", {
   display: "flex",
   flexWrap: "wrap",
@@ -60,6 +73,13 @@ const Vote = styled("div", ({ $theme }) => ({
   width: "16em",
   margin: $theme.sizing.scale800,
 }));
+
+const UserName = styled("div", {
+  display: "flex",
+  alignItems: "center",
+  overflow: "auto",
+  textOverflow: "ellipsis",
+});
 
 export const Votes = () => {
   const { roomId } = useParams();
@@ -82,7 +102,9 @@ export const Votes = () => {
       variables: { roomId },
     }
   );
-  // const [stories, setStories] = useState([]);
+  const { data: userCreatedData } = useSubscription(USER_CREATED_SUBSCRIPTION, {
+    variables: { roomId },
+  });
   const [room, setRoom] = useState();
 
   useEffect(() => {
@@ -140,6 +162,14 @@ export const Votes = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storyCreatedData]);
 
+  useEffect(() => {
+    if (userCreatedData) {
+      const { userCreated } = userCreatedData;
+      return setRoom({ ...room, users: [...room.users, userCreated] });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userCreatedData]);
+
   if (loading) {
     return <div>loading</div>;
   }
@@ -149,10 +179,11 @@ export const Votes = () => {
     (story) => story.id === room?.currentStoryId
   );
   const votes = story?.votes;
+
   return (
     <Outline>
       {votes?.map((vote) => (
-        <Vote>
+        <Vote key={vote.userId + vote.storyId}>
           <Card
             overrides={{
               Root: {
@@ -160,13 +191,17 @@ export const Votes = () => {
                   height: "4em",
                   width: "4em",
                   marginRight: $theme.sizing.scale400,
+                  display: "flex",
+                  justifyContent: "center",
                 }),
               },
             }}
           >
             <StyledBody>{phase === "DISCUSSION" && vote.score}</StyledBody>
           </Card>
-          <span>{vote.userId}</span>
+          <UserName>
+            {room?.users?.find((user) => user.id === vote.userId).name}
+          </UserName>
         </Vote>
       ))}
     </Outline>
