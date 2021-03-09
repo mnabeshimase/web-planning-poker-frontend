@@ -1,5 +1,5 @@
 import { styled } from "baseui";
-import { RoomForm } from "./RoomForm";
+import { RoomForm } from "../Room/RoomForm";
 
 const Layout = styled("div", ({ $theme }) => ({
   paddingTop: $theme.sizing.scale1600,

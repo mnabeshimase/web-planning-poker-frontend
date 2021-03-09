@@ -14,13 +14,13 @@ import { Client as Styletron } from "styletron-engine-atomic";
 import { Provider as StyletronProvider } from "styletron-react";
 import { LightTheme, BaseProvider } from "baseui";
 
-import { Room } from "./Room";
-import { Home } from "./Home";
-import { Header } from "./Header";
-import { NotFound } from "./NotFound";
+import { Room } from "./components/Room/Room";
+import { Home } from "./components/Home/Home";
+import { Header } from "./components/Layout/Header";
+import { NotFound } from "./components/Layout/NotFound";
 import reportWebVitals from "./reportWebVitals";
 // eslint-disable-next-line no-unused-vars
-import NormalizeCSS from "./normalize.css";
+import NormalizeCSS from "./assets/normalize.css";
 
 const httpLink = new HttpLink({
   uri: "http://localhost:3001/graphql",

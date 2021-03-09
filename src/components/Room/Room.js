@@ -12,13 +12,13 @@ import {
 } from "baseui/modal";
 import { FormControl } from "baseui/form-control";
 
-import { Hand } from "./Hand";
+import { Hand } from "../Card/Hand";
 import { Input } from "baseui/input";
-import { Votes } from "./Votes";
-import { HostActionPanes } from "./HostActionPanel";
-import { Stories } from "./Stories";
-import { StoryActionsPanel } from "./StoryActionsPanel/StoryActionsPanel";
-import { StoryMetadata } from "./StoryMedatada";
+import { Votes } from "../Vote/Votes";
+import { HostActionPanes } from "../Host/HostActionPanel";
+import { Stories } from "../Story/Stories";
+import { StoryActionsPanel } from "../Story/StoryActionsPanel";
+import { StoryMetadata } from "../Story/StoryMedatada";
 
 const ROOM_QUERY = gql`
   query Room($id: ID!) {
