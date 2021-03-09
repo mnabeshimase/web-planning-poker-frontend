@@ -29,7 +29,7 @@ const OutLine = styled("div", ({ $theme }) => ({
 }));
 
 const List = styled("div", {
-  height: "52em",
+  height: "42em",
   overflow: "scroll",
 });
 

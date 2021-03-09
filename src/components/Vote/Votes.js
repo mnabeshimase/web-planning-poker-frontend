@@ -64,7 +64,7 @@ const USER_CREATED_SUBSCRIPTION = gql`
 const Outline = styled("div", {
   display: "flex",
   flexWrap: "wrap",
-  height: "40em",
+  height: "32em",
   alignContent: "flex-start",
 });
 
