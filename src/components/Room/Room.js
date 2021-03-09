@@ -15,7 +15,7 @@ import { FormControl } from "baseui/form-control";
 import { Hand } from "../Card/Hand";
 import { Input } from "baseui/input";
 import { Votes } from "../Vote/Votes";
-import { HostActionPanes } from "../Host/HostActionPanel";
+import { HostActionPanel } from "../Host/HostActionPanel";
 import { Stories } from "../Story/Stories";
 import { StoryActionsPanel } from "../Story/StoryActionsPanel";
 import { StoryMetadata } from "../Story/StoryMedatada";
@@ -107,7 +107,7 @@ export function Room() {
             <FlexGridItem>
               <StoryMetadata />
             </FlexGridItem>
-            <FlexGridItem>{isHost && <HostActionPanes />}</FlexGridItem>
+            <FlexGridItem>{isHost && <HostActionPanel />}</FlexGridItem>
             <FlexGridItem>
               <Votes />
             </FlexGridItem>

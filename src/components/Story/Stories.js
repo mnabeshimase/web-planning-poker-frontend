@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import { gql, useQuery, useSubscription } from "@apollo/client";
 import { ListItem, ListItemLabel } from "baseui/list";
 import { styled } from "baseui";
 import { Display4 } from "baseui/typography";
 
-const LIST_STORIES_BY_ROOM_ID_QUERY = gql`
+export const LIST_STORIES_BY_ROOM_ID_QUERY = gql`
   query ListStoriesByRoomId($id: ID!) {
     listStoriesByRoomId(id: $id) {
       id
@@ -14,7 +14,7 @@ const LIST_STORIES_BY_ROOM_ID_QUERY = gql`
   }
 `;
 
-const STORY_CREATED_SUBSCRIPTION = gql`
+export const STORY_CREATED_SUBSCRIPTION = gql`
   subscription StoryCreated($roomId: ID!) {
     storyCreated(roomId: $roomId) {
       id

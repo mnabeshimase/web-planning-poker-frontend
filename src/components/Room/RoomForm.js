@@ -6,7 +6,7 @@ import { Input } from "baseui/input";
 import { FormControl } from "baseui/form-control";
 import { styled } from "baseui";
 
-const CREATE_USER_MUTATION = gql`
+export const CREATE_USER_MUTATION = gql`
   mutation CreateUser($roomId: ID, $name: String!) {
     createUser(roomId: $roomId, name: $name) {
       name
@@ -48,6 +48,7 @@ export const RoomForm = () => {
   return (
     <Outline>
       <form
+        data-testid="form"
         onSubmit={(e) => {
           e.preventDefault();
           createUser({ variables: { name: userName } });
@@ -55,6 +56,7 @@ export const RoomForm = () => {
       >
         <FormControl label="Username">
           <Input
+            $data-testid="input"
             value={userName}
             onChange={(e) => setUserName(e.target.value)}
           />

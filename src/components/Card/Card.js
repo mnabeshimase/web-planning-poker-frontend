@@ -1,8 +1,8 @@
 import { gql, useMutation, useQuery, useSubscription } from "@apollo/client";
 import { Button } from "baseui/button";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 
-const UPSERT_VOTE_MUTATION = gql`
+export const UPSERT_VOTE_MUTATION = gql`
   mutation UpsertVote($upsertVoteInput: UpsertVoteInput!) {
     upsertVote(upsertVoteInput: $upsertVoteInput) {
       storyId
@@ -12,7 +12,7 @@ const UPSERT_VOTE_MUTATION = gql`
   }
 `;
 
-const ROOM_QUERY = gql`
+export const ROOM_QUERY = gql`
   query Room($id: ID!) {
     room(id: $id) {
       currentStoryId
@@ -20,7 +20,7 @@ const ROOM_QUERY = gql`
   }
 `;
 
-const ROOM_UPDATED_SUBSCRIPTION = gql`
+export const ROOM_UPDATED_SUBSCRIPTION = gql`
   subscription RoomUpdated($roomId: ID!) {
     roomUpdated(roomId: $roomId) {
       currentStoryId

@@ -1,10 +1,10 @@
 import { gql, useQuery, useSubscription } from "@apollo/client";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import { Card, StyledBody } from "baseui/card";
 import { styled } from "baseui";
 
-const ROOM_QUERY = gql`
+export const ROOM_QUERY = gql`
   query Room($id: ID!) {
     room(id: $id) {
       phase
@@ -20,7 +20,7 @@ const ROOM_QUERY = gql`
   }
 `;
 
-const ROOM_UPDATED_SUBSCRIPTION = gql`
+export const ROOM_UPDATED_SUBSCRIPTION = gql`
   subscription RoomUpdated($roomId: ID!) {
     roomUpdated(roomId: $roomId) {
       phase
@@ -29,7 +29,7 @@ const ROOM_UPDATED_SUBSCRIPTION = gql`
   }
 `;
 
-const VOTE_UPSERTED_SUBSCRIPTION = gql`
+export const VOTE_UPSERTED_SUBSCRIPTION = gql`
   subscription VoteUpserted($roomId: ID!) {
     voteUpserted(roomId: $roomId) {
       userId
@@ -39,7 +39,7 @@ const VOTE_UPSERTED_SUBSCRIPTION = gql`
   }
 `;
 
-const STORY_CREATED_SUBSCRIPTION = gql`
+export const STORY_CREATED_SUBSCRIPTION = gql`
   subscription StoryCreated($roomId: ID!) {
     storyCreated(roomId: $roomId) {
       id

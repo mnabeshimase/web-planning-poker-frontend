@@ -1,4 +1,4 @@
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import { gql, useMutation, useQuery, useSubscription } from "@apollo/client";
 import { Button } from "baseui/button";
 import { ButtonGroup } from "baseui/button-group";
@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 const DISCUSSION = "DISCUSSION";
 const VOTE = "VOTE";
 
-const ROOM_QUERY = gql`
+export const ROOM_QUERY = gql`
   query Room($id: ID!) {
     room(id: $id) {
       id
@@ -22,7 +22,7 @@ const ROOM_QUERY = gql`
   }
 `;
 
-const UPDATE_ROOM_MUTATION = gql`
+export const UPDATE_ROOM_MUTATION = gql`
   mutation UpdateRoom($updateRoomInput: UpdateRoomInput!) {
     updateRoom(updateRoomInput: $updateRoomInput) {
       phase
@@ -30,7 +30,7 @@ const UPDATE_ROOM_MUTATION = gql`
   }
 `;
 
-const ROOM_UPDATED_SUBSCRIPTION = gql`
+export const ROOM_UPDATED_SUBSCRIPTION = gql`
   subscription RoomUpdated($roomId: ID!) {
     roomUpdated(roomId: $roomId) {
       phase
@@ -39,7 +39,7 @@ const ROOM_UPDATED_SUBSCRIPTION = gql`
   }
 `;
 
-const STORY_CREATED_SUBSCRIPTION = gql`
+export const STORY_CREATED_SUBSCRIPTION = gql`
   subscription StoryCreated($roomId: ID!) {
     storyCreated(roomId: $roomId) {
       id
@@ -65,7 +65,7 @@ const ButtonOverride = {
   },
 };
 
-export const HostActionPanes = () => {
+export const HostActionPanel = () => {
   const { roomId } = useParams();
   const { data: roomData, loading: roomLoading } = useQuery(ROOM_QUERY, {
     variables: { id: roomId },
